@@ -22,12 +22,19 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        moveDirection = new Vector3(Input.GetAxis("Horizontal") * speed, 0f, Input.GetAxis("Vertical") * speed); // 0f means it's a float value
+        moveDirection = new Vector3(Input.GetAxis("Horizontal") * speed, moveDirection.y , Input.GetAxis("Vertical") * speed);
 
-        if(Input.GetButton("Jump")) // if jump is pressed we jump with a setted force
-        {
-            moveDirection.y = jumpForce;
+        if(controller.isGrounded){ //Intendiamo che possiamo saltare solamente se siamo a terra
+            
+            moveDirection.y=0f; // 0f means it's a float value
+
+            if(Input.GetButton("Jump")) // if jump is pressed we jump with a setted force
+            {
+                moveDirection.y = jumpForce;
+            }
         }
+
+
 
         moveDirection.y = moveDirection.y + (Physics.gravity.y * gravityScale); // whatever the position is, we reset the y position adding the gravity once a frame
         
