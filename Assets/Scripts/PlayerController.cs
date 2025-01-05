@@ -2,42 +2,39 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    // private vars
-    private Vector3 moveDirection;
-
-    // public vars
-    public float speed;
-    public float jumpForce;
-    public float gravityScale; // we don't want our player to be moving at the gravity speed each frame
-    public CharacterController controller;
+    [SerializeField] private float moveSpeed = 5f;
 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private Vector2 moveInput;
+
+    private void Awake()
     {
-        controller = GetComponent<CharacterController>();
+        // Si mette in ascolto dell'evento PLAYER_MOVE
+        Messenger<Vector2>.AddListener(GameEvent.PLAYER_MOVE, OnPlayerMove);
+    }
+
+    private void OnDestroy()
+    {
+        // Smette di ascoltare l'evento PLAYER_MOVE
+        Messenger<Vector2>.RemoveListener(GameEvent.PLAYER_MOVE, OnPlayerMove);
+    }
+
+    private void OnPlayerMove(Vector2 move)
+    {
+        moveInput = move;
     }
 
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
-        moveDirection = new Vector3(Input.GetAxis("Horizontal") * speed, moveDirection.y , Input.GetAxis("Vertical") * speed);
+        Move();
+    }
 
-        if(controller.isGrounded){ //Intendiamo che possiamo saltare solamente se siamo a terra
-            
-            moveDirection.y=0f; // 0f means it's a float value
+    private void Move()
+    {
+        if(moveInput == Vector2.zero) return;
 
-            if(Input.GetButton("Jump")) // if jump is pressed we jump with a setted force
-            {
-                moveDirection.y = jumpForce;
-            }
-        }
-
-
-
-        moveDirection.y = moveDirection.y + (Physics.gravity.y * gravityScale); // whatever the position is, we reset the y position adding the gravity once a frame
-        
-        controller.Move(moveDirection * Time.deltaTime); // Time.deltaTime records how long it was since the last frame happened, so we delay the update of the speed
+        Vector3 moveDirection = new Vector3(moveInput.x, moveInput.y, 0);
+        transform.Translate(moveDirection * moveSpeed * Time.deltaTime);
     }
 }
