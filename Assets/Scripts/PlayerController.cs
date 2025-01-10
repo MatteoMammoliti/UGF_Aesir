@@ -19,6 +19,16 @@ public class PlayerController : MonoBehaviour
         Messenger<Vector2>.RemoveListener(GameEvent.PLAYER_MOVE, OnPlayerMove);
     }
 
+    private void Start() {
+        // Carica la posizione del player
+        Vector3 position = SaveSystem.LoadPosition();
+        
+        if (position != Vector3.zero)
+        {
+            transform.position = position;
+        }
+    }
+
     private void OnPlayerMove(Vector2 move)
     {
         moveInput = move;
@@ -26,11 +36,6 @@ public class PlayerController : MonoBehaviour
 
 
     private void FixedUpdate()
-    {
-        Move();
-    }
-
-    private void Move()
     {
         if(moveInput == Vector2.zero) return;
 

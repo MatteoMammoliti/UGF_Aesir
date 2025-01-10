@@ -12,14 +12,14 @@ static internal class MessengerInternal {
 	static public readonly MessengerMode DEFAULT_MODE = MessengerMode.REQUIRE_LISTENER;
 
 	static public void AddListener(string eventType, Delegate callback) {
-		MessengerInternal.OnListenerAdding(eventType, callback);
+		OnListenerAdding(eventType, callback);
 		eventTable[eventType] = Delegate.Combine(eventTable[eventType], callback);
 	}
 
 	static public void RemoveListener(string eventType, Delegate handler) {
-		MessengerInternal.OnListenerRemoving(eventType, handler);	
+		OnListenerRemoving(eventType, handler);	
 		eventTable[eventType] = Delegate.Remove(eventTable[eventType], handler);
-		MessengerInternal.OnListenerRemoved(eventType);
+		OnListenerRemoved(eventType);
 	}
 
 	static public T[] GetInvocationList<T>(string eventType) {
@@ -28,7 +28,7 @@ static internal class MessengerInternal {
 			if(d != null) {
 				return d.GetInvocationList().Cast<T>().ToArray();
 			} else {
-				throw MessengerInternal.CreateBroadcastSignatureException(eventType);
+				throw CreateBroadcastSignatureException(eventType);
 			}
 		}
 		return null;
@@ -67,7 +67,7 @@ static internal class MessengerInternal {
 
 	static public void OnBroadcasting(string eventType, MessengerMode mode) {
 		if (mode == MessengerMode.REQUIRE_LISTENER && !eventTable.ContainsKey(eventType)) {
-			throw new MessengerInternal.BroadcastException(string.Format("Broadcasting message {0} but no listener found.", eventType));
+			throw new BroadcastException(string.Format("Broadcasting message {0} but no listener found.", eventType));
 		}
 	}
 
