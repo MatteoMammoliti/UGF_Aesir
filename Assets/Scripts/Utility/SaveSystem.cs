@@ -33,24 +33,16 @@ public static class SaveSystem
     }
 
 
-    public static void SavePosition(Vector3 position)
+    public static void SaveGameData(GameData data)
     {
-        float[] tmp = {position.x, position.y, position.z};
-        Save(tmp, gameDataPath);
+        Save(data, gameDataPath);
     }
 
-    public static Vector3 LoadPosition()
+    public static GameData LoadGameData()
     {
-        var data = Load(gameDataPath);
+        GameData data = Load(gameDataPath) as GameData;
 
-        if (data != null)
-        {
-            float[] tmp = data as float[];
-            return new Vector3(tmp[0], tmp[1], tmp[2]);
-        }
-        else
-        {
-            return Vector3.zero;
-        }
+        if (data != null) return data;
+        else return null;
     }
 }
